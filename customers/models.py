@@ -31,12 +31,13 @@ class Customer(models.Model):
     class Meta:
         db_table = 'customers'
         ordering = ['-created_at']
+        managed = False 
         indexes = [
             models.Index(fields=['code']),
             models.Index(fields=['phone']),
         ]
     # Model-level validation before saving to DB
-    def clean(self):
+    def clean(self):        
         if self.code:
             self.code = self.code.upper().strip()
         if self.phone and not self.phone.isdigit():
