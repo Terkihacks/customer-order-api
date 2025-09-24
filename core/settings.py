@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'rest_framework',
+    'rest_framework',    
 
     'customers',
     'orders',
@@ -46,6 +46,17 @@ INSTALLED_APPS = [
     'authentication',
 
 ]
+
+
+# Auth0 OIDC settings
+OIDC_RP_CLIENT_ID = "eiZ5km6hxDgl0I4C8Iiwa4oXNn48yUGp"
+OIDC_RP_CLIENT_SECRET = "9HNq1zt4E-QgrF-J9WFK1MG_T7jmxeQMc45EljlfzMiAMapy0QchBOF1g9s8CbkX"
+OIDC_OP_DISCOVERY_ENDPOINT = "dev-pzebyxa8k777rgvs.us.auth0.com"
+
+LOGIN_REDIRECT_URL = "/"
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
