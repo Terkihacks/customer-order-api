@@ -4,6 +4,7 @@ from django.conf import settings
 from .auth_utils import oauth
 
 def login(request):
+    # http://localhost:8000/api/v1/auth/callback/
     redirect_uri = "http://localhost:8000/api/v1/auth/callback/"
     return oauth.auth0.authorize_redirect(request, redirect_uri)
 
