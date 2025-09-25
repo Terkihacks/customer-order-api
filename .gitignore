@@ -1,1 +1,4 @@
 .env
+settings.py
+core/__init__.py
+core/celery.py

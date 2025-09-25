@@ -11,16 +11,19 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-az8(h_axfcg7b#spvlhkm7jtdhkhd_z4$y23*^q+8@i4h0$k4!'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "fallback-secret")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -49,11 +52,24 @@ INSTALLED_APPS = [
 
 
 # Auth0 OIDC settings
-OIDC_RP_CLIENT_ID = "eiZ5km6hxDgl0I4C8Iiwa4oXNn48yUGp"
-OIDC_RP_CLIENT_SECRET = "9HNq1zt4E-QgrF-J9WFK1MG_T7jmxeQMc45EljlfzMiAMapy0QchBOF1g9s8CbkX"
-OIDC_OP_DISCOVERY_ENDPOINT = "dev-pzebyxa8k777rgvs.us.auth0.com"
+OIDC_RP_CLIENT_ID = os.getenv("OIDC_RP_CLIENT_ID")
+OIDC_RP_CLIENT_SECRET = os.getenv("OIDC_RP_CLIENT_SECRET")
+OIDC_OP_DISCOVERY_ENDPOINT = os.getenv("OIDC_OP_DISCOVERY_ENDPOINT")
 
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "admin/"
+
+# Celery
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", CELERY_BROKER_URL)
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+
+# Africa's Talking API
+AFRICASTALKING_USERNAME = os.getenv("AFRICASTALKING_USERNAME")
+AFRICASTALKING_API_KEY = os.getenv("AFRICASTALKING_API_KEY")
+AFRICASTALKING_SENDER_ID = os.getenv("AFRICASTALKING_SENDER_ID") 
+
 
 
 
