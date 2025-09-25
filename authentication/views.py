@@ -8,22 +8,28 @@ from django.contrib.auth import authenticate
 from django.http import JsonResponse
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view
-
+from rest_framework.response import Response
 
 @api_view(['POST'])
 def register(request):
     # Register a new user.
+    if request.method == ' POST':
+        return Response(
+            {"detail": "POST JSON {\"name\": \"...\", \"password\": \"...\", \"email\": \"...\"} to register"},
+            status=200,
+        )
+
     data = request.data
     username = data.get("name")
     password = data.get("password")
     email = data.get("email")
     
     if not username or not password:
-        return JsonResponse({"error": "Username and password required"}, status=400)
+        return Response({"error": "Username and password required"}, status=400)
     if User.objects.filter(username=username).exists():
-        return JsonResponse({"error": "Username already exists"}, status=400)
+        return Response({"error": "Username already exists"}, status=400)
     user = User.objects.create_user(username=username, password=password, email=email)
-    return JsonResponse({"message": "User registered successfully"}, status=201)
+    return Response({"message": "User registered successfully"}, status=201)
 
 @csrf_exempt
 def token_refresh(request):
@@ -50,7 +56,7 @@ def callback(request):
     user_info = token.get("userinfo")
     request.session["user"] = user_info
     return JsonResponse(user_info)
-    return ""
+
 
 def logout(request):
     request.session.clear()

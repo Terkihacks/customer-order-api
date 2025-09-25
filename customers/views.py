@@ -17,6 +17,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
     - Filtering, searching, ordering
     - Custom actions for orders and active customers
     """
+    # permission_classes = [isAuthenticated]
     queryset = Customer.objects.all() 
     serializer_class = CustomerSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -40,7 +41,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Custom create with clear validation handling.
+        Custom create with clear validation handling. 
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

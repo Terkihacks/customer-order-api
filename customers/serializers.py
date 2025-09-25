@@ -38,7 +38,7 @@ class CustomerSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Customer code must be at least 3 characters.")
         return value
 
-    def validate_phone(self, value: str) -> str:
+    def validate_phone(self, value: str) -> str: 
         """
         Ensure phone numbers follow Kenyan format (+254...).
         """
