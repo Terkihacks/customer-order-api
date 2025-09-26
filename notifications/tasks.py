@@ -20,7 +20,7 @@ def send_order_sms(self, order_id):
         logger.warning("Order %s customer has no phone", order_id)
         return
 
-    message = f"Hello {order.customer.name}, your order #{order.id} for {order.item} has been received. Amount: {order.amount}."
+    message = f"Hello {order.customer.name}, your order #{order.id} for {order.item} has been received. Amount: {order.amount} at {order.order_time}."
 
     # create or get notification record
     notif, _ = SMSNotification.objects.get_or_create(order_id=order.id, to=to, defaults={"message": message})
@@ -47,3 +47,4 @@ def send_order_sms(self, order_id):
         
         countdown = min(2 ** self.request.retries * 60, 3600)
         raise self.retry(exc=exc, countdown=countdown)
+

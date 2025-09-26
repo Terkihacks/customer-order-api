@@ -6,7 +6,7 @@ import logging
 
 from .models import Order
 from .serializers import OrderSerializer, OrderCreateSerializer
-# from events.serializers import EventSerializer
+from rest_framework.permissions import IsAuthenticated
 
 logger = logging.getLogger(__name__)
 
@@ -29,9 +29,9 @@ class OrderViewSet(viewsets.ModelViewSet):
             return OrderCreateSerializer
         return OrderSerializer
 
-    def perform_create(self, serializer):
+    def create_order(self, serializer):
         """
-        Custom create logic:
+         Order create logic:
         - Save order
         - Log creation
         - Trigger async SMS notification
@@ -41,7 +41,6 @@ class OrderViewSet(viewsets.ModelViewSet):
         # Trigger an order_created event
          
          
-    
         return order
 
     @action(detail=True, methods=["patch"], permission_classes = [IsAuthenticated])
