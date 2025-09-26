@@ -54,9 +54,33 @@ def login(request):
 def callback(request):
     token = oauth.auth0.authorize_access_token(request)
     user_info = token.get("userinfo")
-    request.session["user"] = user_info
-    return JsonResponse(user_info)
 
+    email = user_info.get("email")
+    sub = user_info.get("sub")  # unique Auth0 user id
+    name = user_info.get("name", email.split("@")[0])
+
+    # Create or fetch Django user
+    user, created = User.objects.get_or_create(
+        username=sub,
+        defaults={"email": email, "first_name": name}
+    )
+
+    # Save Auth0 session
+    request.session["user"] = {
+        "id": user.id,
+        "email": user.email,
+        "auth0_sub": sub,
+    }
+
+    return Response({
+        "message": "Login successful",
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "name": user.first_name,
+        },
+        "token": token  
+    })
 
 def logout(request):
     request.session.clear()

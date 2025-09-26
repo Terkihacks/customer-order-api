@@ -70,9 +70,14 @@ AFRICASTALKING_USERNAME = os.getenv("AFRICASTALKING_USERNAME")
 AFRICASTALKING_API_KEY = os.getenv("AFRICASTALKING_API_KEY")
 AFRICASTALKING_SENDER_ID = os.getenv("AFRICASTALKING_SENDER_ID") 
 
-
-
-
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -82,6 +87,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middleware.Auth0Middleware'
+
 ]
 
 ROOT_URLCONF = 'core.urls'

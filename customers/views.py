@@ -36,7 +36,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
             return queryset.only('id', 'name', 'code', 'phone', 'created_at')
 
         return queryset.prefetch_related('orders')
-
+    
     def create(self, request, *args, **kwargs):
         """
         Customer create with clear validation handling. 
