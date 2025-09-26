@@ -2,7 +2,9 @@ from rest_framework import viewsets, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
+
 import logging
+from .signals import order_created_handler
 
 from .models import Order
 from .serializers import OrderSerializer, OrderCreateSerializer
@@ -38,9 +40,8 @@ class OrderViewSet(viewsets.ModelViewSet):
         """
         order = serializer.save()
         logger.info(f"Order {order.id} created for customer {order.customer.code}")
-        # Trigger an order_created event
-         
-         
+        # Trigger an order_created event and  Fire the signal
+        order_created_handler.send(sender=self.__class__, order=order)
         return order
 
     @action(detail=True, methods=["patch"], permission_classes = [IsAuthenticated])
