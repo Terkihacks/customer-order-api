@@ -5,19 +5,17 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from .models import Customer
 from .serializers import CustomerSerializer
-# from orders.serializers import OrderSerializer
-
+from rest_framework.permissions import IsAuthenticated
 
 class CustomerViewSet(viewsets.ModelViewSet):
     """
     API endpoint for managing customers.
-
     Provides:
     - Standard CRUD operations
     - Filtering, searching, ordering
     - Custom actions for orders and active customers
     """
-    # permission_classes = [isAuthenticated]
+    permission_classes = [IsAuthenticated]
     queryset = Customer.objects.all() 
     serializer_class = CustomerSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -41,7 +39,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Custom create with clear validation handling. 
+        Customer create with clear validation handling. 
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -54,10 +52,10 @@ class CustomerViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
             headers=headers
         )
-
+   
     def update(self, request, *args, **kwargs):
         """
-        Custom update with success message.
+        Customer update with success message.
         """
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
@@ -72,7 +70,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK
         )
 
-    @action(detail=True, methods=['get'], url_path="orders")
+    @action(detail=True, methods=['get'], url_path="orders",permission_classes=[IsAuthenticated])
     def orders(self, request, pk=None):
         """Get all orders for a specific customer"""
         customer = self.get_object()
@@ -80,7 +78,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         
         # Pagination for orders
         page = self.paginate_queryset(orders)
-        from .orders.serializers import OrderSerializer
+        from orders.serializers import OrderSerializer
         if page is not None:
             serializer = OrderSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
@@ -89,7 +87,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
-    @action(detail=False, methods=['get'], url_path="active")
+    @action(detail=False, methods=['get'], url_path="active", permission_classes=[IsAuthenticated])
     def active(self, request):
         """
         Get customers who have placed recent orders.
@@ -100,24 +98,3 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['post'], url_path="bulk")
-    def bulk_create(self, request):
-        """
-        Bulk create customers in one request.
-        """
-        serializer = self.get_serializer(data=request.data, many=True)
-        serializer.is_valid(raise_exception=True)
-
-        self.perform_bulk_create(serializer)
-
-        return Response(
-            {"message": f"{len(serializer.validated_data)} customers created successfully"},
-            status=status.HTTP_201_CREATED
-        )
-
-    def perform_bulk_create(self, serializer):
-        """
-        Efficient bulk insert for customers.
-        """
-        customers = [Customer(**item) for item in serializer.validated_data]
-        Customer.objects.bulk_create(customers)

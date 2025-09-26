@@ -9,3 +9,4 @@ router.register(r'customers', CustomerViewSet, basename='customer')
 urlpatterns = [
     path('', include(router.urls)),
 ]
+

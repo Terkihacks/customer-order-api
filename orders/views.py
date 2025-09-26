@@ -16,6 +16,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     API endpoint for managing orders.
     Supports filtering, ordering, custom creation, and cancellation.
     """
+    permission_classes = [IsAuthenticated]
     queryset = Order.objects.select_related("customer")
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ["status", "customer__code"]
@@ -43,7 +44,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     
         return order
 
-    @action(detail=True, methods=["patch"])
+    @action(detail=True, methods=["patch"], permission_classes = [IsAuthenticated])
     def cancel(self, request, pk=None):
         """
         Cancel an order (only if status is 'pending').

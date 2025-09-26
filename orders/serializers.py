@@ -43,6 +43,3 @@ class OrderCreateSerializer(OrderSerializer):
         validated_data['customer'] = customer
         return super().create(validated_data)
     
-    def to_representation(self, instance):
-        """Return full OrderSerializer response after creation"""
-        return OrderSerializer(instance, context=self.context).data
