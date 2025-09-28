@@ -20,15 +20,15 @@ def register(request):
         )
 
     data = request.data
-    username = data.get("name")
+    name = data.get("name")
     password = data.get("password")
     email = data.get("email")
     
-    if not username or not password:
+    if not name or not password:
         return Response({"error": "Username and password required"}, status=400)
-    if User.objects.filter(username=username).exists():
+    if User.objects.filter(name=name).exists():
         return Response({"error": "Username already exists"}, status=400)
-    user = User.objects.create_user(username=username, password=password, email=email)
+    user = User.objects.create_user(name=name, password=password, email=email)
     return Response({"message": "User registered successfully"}, status=201)
 
 @csrf_exempt

@@ -45,8 +45,4 @@ class Order(models.Model):
         is_new = self.pk is None
         super().save(*args, **kwargs)
 
-        # Trigger SMS for new orders only
-        # if is_new and self.status == 'pending':
-        #     from orders.tasks import send_order_sms
-        #     send_order_sms.delay(self.id)
         

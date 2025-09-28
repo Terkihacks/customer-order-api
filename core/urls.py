@@ -24,3 +24,5 @@ urlpatterns = [
     path('api/v1/orders/',include("orders.urls")),
     path("api/v1/auth/", include("authentication.urls")),    
 ]
+
+ 
