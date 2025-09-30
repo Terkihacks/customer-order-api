@@ -4,41 +4,59 @@ from django.conf import settings
 from .auth_utils import oauth
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
+from rest_framework import status
 from django.contrib.auth import authenticate
 from django.http import JsonResponse
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-@api_view(['POST'])
+@api_view(["POST"])
 def register(request):
-    # Register a new user.
-    if request.method == ' POST':
-        return Response(
-            {"detail": "POST JSON {\"name\": \"...\", \"password\": \"...\", \"email\": \"...\"} to register"},
-            status=200,
-        )
-
+    """
+    Register a new customer.
+    POST JSON:
+    {
+        "email": "test@example.com",
+        "name": "John Doe",
+        "password": "strongpass123",
+        "phone": "+254712345678"  # optional
+    }
+    """
     data = request.data
+    email = data.get("email")
     name = data.get("name")
     password = data.get("password")
-    email = data.get("email")
-    
-    if not name or not password:
-        return Response({"error": "Username and password required"}, status=400)
-    if User.objects.filter(name=name).exists():
-        return Response({"error": "Username already exists"}, status=400)
-    user = User.objects.create_user(name=name, password=password, email=email)
-    return Response({"message": "User registered successfully"}, status=201)
+    phone = data.get("phone", None)
 
-@csrf_exempt
+    if not email or not password:
+        return Response(
+            {"error": "Email and password are required"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    if Customer.objects.filter(email=email).exists():
+        return Response({"error": "Customer with this email already exists"}, status=400)
+
+    customer = Customer.objects.create_user(email=email, name=name, password=password, code=email, phone=phone)
+
+    return Response(
+        {
+            "message": "Customer registered successfully",
+            "customer": {"id": customer.id, "email": customer.email, "name": customer.name, "phone": customer.phone},
+        },
+        status=status.HTTP_201_CREATED,
+    )
+    
+# @csrf_exempt
+@api_view(["POST"])
 def token_refresh(request):
     """
     Refresh JWT access token.
     """
     refresh_token = request.data.get("refresh")
     if not refresh_token:
-        return JsonResponse({"error": "Refresh token required"}, status=400)
+        return Response({"error": "No refresh token provided"}, status=status.HTTP_400_BAD_REQUEST)
+        # return JsonResponse({"error": "Refresh token required"}, status=400)
     try:
         refresh = RefreshToken(refresh_token)
         access_token = str(refresh.access_token)

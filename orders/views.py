@@ -26,10 +26,10 @@ class OrderViewSet(viewsets.ModelViewSet):
     ordering = ["-order_time"]
 
     def get_serializer_class(self):
-        """Use different serializers for create vs. read operations."""
-        if self.action == "create":
+        if self.action in ['create', 'update', 'partial_update']:
             return OrderCreateSerializer
         return OrderSerializer
+
 
     def create_order(self, serializer):
         """

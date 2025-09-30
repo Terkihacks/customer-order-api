@@ -4,20 +4,21 @@ from authlib.jose import JsonWebToken, JoseError
 from authlib.jose.errors import ExpiredTokenError
 import requests
 
+
 class Auth0Middleware:
     """
-    Middleware to protect /api/ routes using Auth0 JWT validation with Authlib.
+    Middleware to validate incoming Bearer tokens from Auth0.
     """
 
     def __init__(self, get_response):
         self.get_response = get_response
         self.jwks_url = f"https://{settings.AUTH0_DOMAIN}/.well-known/jwks.json"
         self.jwks = requests.get(self.jwks_url).json()
-        self.jwt = JsonWebToken(['RS256'])
+        self.jwt = JsonWebToken(["RS256"])
 
     def __call__(self, request):
-        if request.path.startswith("/api/"):  # only protect API routes
-            auth_header = request.headers.get("Authorization", None)
+        if request.path.startswith("/api/"):
+            auth_header = request.headers.get("Authorization")
             if not auth_header:
                 return JsonResponse({"error": "Authorization header missing"}, status=401)
 
@@ -34,13 +35,11 @@ class Auth0Middleware:
                     self.jwks,
                     claims_options={
                         "iss": {"essential": True, "value": f"https://{settings.AUTH0_DOMAIN}/"},
-                        "aud": {"essential": True, "value": settings.OIDC_RP_CLIENT_ID}
-                    }
+                        "aud": {"essential": True, "value": settings.OIDC_RP_CLIENT_ID},
+                    },
                 )
-                claims.validate() 
-
-                request.auth_payload = claims  # attach claims to request
-
+                claims.validate()
+                request.auth_payload = claims
             except ExpiredTokenError:
                 return JsonResponse({"error": "Token expired"}, status=401)
             except JoseError as e:

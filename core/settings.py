@@ -55,7 +55,7 @@ OIDC_RP_CLIENT_ID = os.getenv("OIDC_RP_CLIENT_ID")
 OIDC_RP_CLIENT_SECRET = os.getenv("OIDC_RP_CLIENT_SECRET")
 OIDC_OP_DISCOVERY_ENDPOINT = os.getenv("OIDC_OP_DISCOVERY_ENDPOINT")
 
-LOGIN_REDIRECT_URL = "admin/"
+LOGIN_REDIRECT_URL = "/"
 
 # Celery
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0")
@@ -71,7 +71,7 @@ AFRICASTALKING_SENDER_ID = os.getenv("AFRICASTALKING_SENDER_ID")
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
+        # "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -109,6 +109,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+# AUTH_USER_MODEL = "customers.Customer"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -116,17 +117,15 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # PostgreSQL configuration 
 DATABASES = {
-        'default': {
-         'ENGINE': 'django.db.backends.{}'.format(os.getenv('DATABASE_ENGINE')
-         ),
-         'NAME': os.getenv('DATABASE_NAME', 'polls'),
-         'USER': os.getenv('DATABASE_USERNAME'),
-         'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-         'HOST': os.getenv('DATABASE_HOST', '127.0.0.1'),
-         'PORT': os.getenv('DATABASE_PORT', 5432),               
+    "default": {
+        "ENGINE": os.getenv("DATABASE_ENGINE", "django.db.backends.postgresql"),
+        "NAME": os.getenv("DATABASE_NAME", "savDB"),
+        "USER": os.getenv("DATABASE_USERNAME", "postgres"),
+        "PASSWORD": os.getenv("DATABASE_PASSWORD", ""),
+        "HOST": os.getenv("DATABASE_HOST", "localhost"),
+        "PORT": os.getenv("DATABASE_PORT", "5432"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
