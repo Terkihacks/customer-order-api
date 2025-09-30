@@ -37,7 +37,7 @@ class SendOrderSmsTaskTest(TestCase):
     @patch("notifications.tasks.logger")
     def test_no_phone_logs_warning(self, mock_logger):
         self.customer.phone = None
-        self.customer.save()
+        self.customer.save() 
 
         result = send_order_sms(self.order.id)
 
