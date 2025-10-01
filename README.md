@@ -31,7 +31,7 @@
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Layer | Technology |
 |-------|------------|
@@ -44,7 +44,7 @@
 
 ---
 
-## 📂 API Structure
+## API Structure
 
 ### Authentication
 | Endpoint | Method | Description |
@@ -122,7 +122,7 @@ docker-compose exec web python manage.py migrate
 docker-compose exec web python manage.py test
 
 
-## Africa’s Talking SMS gateway
+##  Africa’s Talking SMS gateway
 You should have account on [Africa's Talking Portal](https://africastalking.com/). Go to sandbox, and generate API Key, that we will be for sending the sms.
 Launch the simulator and connect with phone number used when adding a Customer, for testing purposes.
 When order is made using order api endpoint provided above a sample message  should be sent to the simulator.
@@ -131,10 +131,12 @@ When order is made using order api endpoint provided above a sample message  sho
 ## Tests
 I have added tests in the `test.py` in each app. To perform the coverage  testing run the command below in the terminal
 
-```
- python manage.py test
-```
+
+```bash 
+python manage.py test
+
 If you have  failed tests due to unaithorised access to the api urls,go to the test files under `Include OAuth2 authentication headers` and add your `Access Token`
+
 
 ## CI/CD Workflow
 The CI/CD workflows are in the .github/workflows folder.
